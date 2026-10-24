@@ -1,0 +1,15 @@
+const assert = require('node:assert/strict');
+const {message,packet}=require('./bridge.cjs');
+const s={title:'测试歌名',artist:'歌手',is_playing:true,current_time_ms:1500,qrc_data:[{start_time_ms:0,content:'第一句'},{start_time_ms:2000,content:'第二句'}]};
+assert.equal(message(s),'♫ 测试歌名 — 歌手\n♪ 第一句');
+assert.ok(message({...s,current_time_ms:2500}).endsWith('第二句'));
+assert.equal(message({...s,is_playing:false}),'');
+assert.ok(message({...s,qrc_data:[],lyrics:'[00:00.00]甲\n[00:02.00]乙',current_time_ms:2100}).endsWith('乙'));
+assert.ok(Array.from(message({...s,title:'歌'.repeat(300),qrc_data:[{start_time_ms:0,content:'词'.repeat(300)}]})).length<=144);
+const p=packet('中文\n歌词');
+assert.equal(p.length%4,0);
+assert.ok(p.includes(Buffer.from(',sTF\0')));
+assert.ok(p.includes(Buffer.from('中文\n歌词\0')));
+const udp=require('node:dgram');
+const receiver=udp.createSocket('udp4');
+receiver.bind(0,'127.0.0.1',()=>{const sender=udp.createSocket('udp4'); receiver.once('message',b=>{assert.deepEqual(b,p); sender.close(); receiver.close(); console.log('PASS: Chinese lyrics, seek, pause, LRC, length, OSC and local UDP');});sender.send(p,receiver.address().port,'127.0.0.1');});

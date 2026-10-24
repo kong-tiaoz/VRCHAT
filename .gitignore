@@ -1,0 +1,12 @@
+# Local application, upstream downloads and extracted source
+qqmusic-osc/monitor/
+qqmusic-osc/source/
+qqmusic-osc/*.exe
+qqmusic-osc/*.msi
+qqmusic-osc/*.zip
+# Runtime data and personal settings
+*.log
+config.toml
+now_playing.*
+current_lyric.txt
+node_modules/
