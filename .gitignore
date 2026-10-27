@@ -10,3 +10,13 @@ config.toml
 now_playing.*
 current_lyric.txt
 node_modules/
+
+# VRCT upstream app, models and personal configuration
+vrct/app/
+vrct/downloads/
+vrct/app-gpu/
+vrct/app-cpu/
+vrct/subtitles/bin/
+vrct/subtitles/state.json
+vrct/subtitles/state.json.tmp
+vrct/subtitles/test-output/
